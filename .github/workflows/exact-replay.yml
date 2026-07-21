@@ -1,0 +1,33 @@
+name: Exact clean-room replay
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/exact-replay.yml'
+      - 'Dockerfile'
+      - 'requirements-lock.txt'
+      - 'scripts/**'
+      - 'tests/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/exact-replay.yml'
+      - 'Dockerfile'
+      - 'requirements-lock.txt'
+      - 'scripts/**'
+      - 'tests/**'
+
+permissions:
+  contents: read
+
+jobs:
+  frozen-zenodo-replay:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build pinned Python 3.14 replay image
+        run: docker build --pull --tag jc2-exact-audit:${{ github.sha }} .
+      - name: Download from Zenodo and replay exact identities
+        run: docker run --rm jc2-exact-audit:${{ github.sha }}
