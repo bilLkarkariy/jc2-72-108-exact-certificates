@@ -36,7 +36,9 @@ computational review is requested.
   exact certificates and core replay scripts.
 - `verification/verify_all_final.out`: saved successful replay output.
 - `social/`: proposed public summary.
-- GitHub Release assets: the complete exact replay workspace and a smaller
+- `release_bundle/`: the complete exact replay workspace included directly in
+  the archival source snapshot used by Zenodo.
+- GitHub Release assets: the same complete replay workspace and a smaller
   selected-certificate archive.
 
 ## Exact certificate architecture
@@ -58,7 +60,7 @@ products, equivalent to 335,250 scalar products.
 
 ## Reproduction
 
-Download and extract `jc2_72_108_exact_replay_v1.0.0.zip` from the latest
+Download and extract `jc2_72_108_exact_replay_v1.0.1.zip` from the latest
 Release, then run:
 
 ```bash
@@ -93,4 +95,3 @@ and reconstruction code is released under the MIT License. See
 OpenAI Codex assisted with certificate reconstruction, verification scripting,
 and manuscript preparation. All central claims are tied either to exact
 machine-checkable identities or to explicitly identified published inputs.
-
