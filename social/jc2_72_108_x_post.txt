@@ -2,7 +2,7 @@ Where the Jacobian Conjecture stands after this week:
 
 n = 1: true
 n = 2: open
-n >= 3: FALSE - following the explicit C3 counterexample announced by Levent Alpoge on July 20.
+n ≥ 3: FALSE - following the explicit C3 counterexample announced by Levent Alpöge on July 20.
 
 And for n = 2, we have just moved the computational frontier.
 
@@ -18,7 +18,7 @@ The hard certificate is an 89.1 MB polynomial identity over a degree-5 number fi
 
 Conditional on the correctness and exhaustiveness of the published reduction and our faithful transcription of it, every hypothetical counterexample to JC(2) must satisfy:
 
-max(deg P, deg Q) >= 125.
+max(deg P, deg Q) ≥ 125.
 
 This is not a proof of JC(2). It is a moved frontier.
 
