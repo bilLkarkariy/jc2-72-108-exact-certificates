@@ -1,0 +1,6 @@
+NEGATIVE_CONTROL_PASS source_hash
+NEGATIVE_CONTROL_PASS certificate_coefficient
+NEGATIVE_CONTROL_PASS equation_regeneration
+NEGATIVE_CONTROL_PASS branch_symmetry
+NEGATIVE_CONTROL_PASS hard_rational_coordinate
+ALL_NEGATIVE_CONTROLS_PASS

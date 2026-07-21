@@ -1,7 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 
 \usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{lmodern}
 \usepackage{microtype}
@@ -20,7 +19,7 @@
   linkcolor=navy,
   citecolor=navy,
   urlcolor=navy,
-  pdftitle={Exact Computer-Assisted Exclusion of the (72,108) Frontier in the Two-Dimensional Jacobian Problem},
+  pdftitle={Exact Certificates for the (72,108) Frontier in the Two-Dimensional Jacobian Problem},
   pdfauthor={Billel Helali},
   pdfsubject={Exact algebraic certificates for the planar Jacobian problem},
   pdfkeywords={Jacobian conjecture, Keller map, computer-assisted proof, exact certificate, Newton polygon}
@@ -45,13 +44,16 @@
 \newcommand{\Jac}{\operatorname{Jac}}
 \newcommand{\JC}{\mathrm{JC}}
 
-\title{\textbf{Exact Computer-Assisted Exclusion of the $(72,108)$ Frontier\\in the Two-Dimensional Jacobian Problem}\vspace{0.5em}\\
-\large With context from the newly announced counterexample in dimension three}
-\author{Billel Helali\\\small Computational verification assisted by OpenAI Codex}
-\date{21 July 2026}
+\title{\textbf{Exact Certificates for the $(72,108)$ Frontier\\in the Two-Dimensional Jacobian Problem}}
+\author{Billel Helali\\\small Independent Researcher, France}
+\date{Version 1.1.0 preprint draft --- 21 July 2026}
 
 \begin{document}
 \maketitle
+
+\begin{center}
+\small Archival artifacts: \href{https://doi.org/10.5281/zenodo.21479814}{doi:10.5281/zenodo.21479814}
+\end{center}
 
 \begin{center}
 \fcolorbox{navy}{pale}{%
@@ -62,50 +64,20 @@ The identities reported below have been replayed in exact characteristic-zero ar
 \end{center}
 
 \begin{abstract}
-An explicit noninjective Keller map in three variables was publicly announced in July 2026. A direct exact calculation gives constant Jacobian determinant $-2$ and exhibits three distinct points with a common image; adjoining identity coordinates therefore gives counterexamples in every dimension $n\geq 3$. The plane case remains separate. For the last degree pair $(72,108)$ left below $125$ by the Laurent/Newton analysis of Guccione, Guccione, Horruitiner and Valqui, we reconstruct and independently replay exact characteristic-zero ideal certificates for both residual configurations. The hard certificate is an $89.1$ MB identity over a degree-five number field. It is obtained from a fixed $1925\times1925$ rational subsystem selected modulo $71$ and then verified against all $2010$ scalar equations. An independent \texttt{gmpy2} verifier checks $13{,}410$ coefficient-field products, or $335{,}250$ scalar products. Subject to the published reduction and its transcription, the pair $(72,108)$ is impossible and any planar counterexample must have maximum degree at least $125$.
+Guccione, Guccione, Horruitiner and Valqui proved that a hypothetical two-dimensional Jacobian counterexample of maximum degree below $125$ must have degree pair $(72,108)$, up to order, and reduced that pair to two Laurent/Newton configurations. We give exact characteristic-zero ideal certificates for the complete coefficient systems transcribed from those configurations. The hard certificate is an $89.1$ MB identity over a degree-five number field, reconstructed from a fixed $1925\times1925$ rational subsystem and verified against all $2010$ scalar equations. A separate \texttt{gmpy2} implementation checks $13{,}410$ coefficient-field products, equivalent to $335{,}250$ scalar products. We also provide a source-to-system audit, a clean-room Linux replay from the frozen Zenodo deposit, and deliberate corruption tests. The exact identities exclude the transcribed systems. The consequence that $(72,108)$ itself is impossible, and hence that any planar counterexample has maximum degree at least $125$, remains conditional on the correctness and exhaustiveness of the published reduction and on external confirmation of our transcription.
 \end{abstract}
 
 \tableofcontents
 
-\section{Introduction: the dimensional split}
+\section{Introduction and scope}
 
-For a polynomial map $F=(F_1,\ldots,F_n):\C^n\to\C^n$, the classical Jacobian conjecture asserts that a nonzero constant determinant $\det JF$ forces $F$ to have a polynomial inverse. The conjecture was introduced by Keller in 1939 \cite{Keller1939}.
+For a polynomial map $F=(F_1,\ldots,F_n):\C^n\to\C^n$, the classical Jacobian conjecture asserts that a nonzero constant determinant $\det JF$ forces $F$ to have a polynomial inverse. The conjecture was introduced by Keller in 1939 \cite{Keller1939}. A three-dimensional counterexample was publicly announced in July 2026 \cite{Alpoge2026}; that development provides current context but plays no role in the argument below. This paper concerns only the still-separate plane problem.
 
-The situation changed sharply on 20 July 2026, when Levent Alp\"oge circulated an explicit three-dimensional polynomial map on X \cite{Alpoge2026}; an expository note by Zhang records the formula and its immediate consequences \cite{Zhang2026}. Section~\ref{sec:threeD} gives a self-contained exact check. The map is a noninjective Keller map, so $\JC(3)$ is false; adjoining untouched coordinates proves the failure of $\JC(n)$ for every $n\geq3$.
+Guccione, Guccione, Horruitiner and Valqui (GGHV) showed that every hypothetical plane counterexample of maximum degree below $125$ must have degree pair $(72,108)$, up to order \cite{GGHV2022}. Their Proposition~4.3 reduces the associated $(8,28)$ corner case to two explicit Laurent/Newton configurations. Our contribution is the reconstruction and exact replay of algebraic certificates excluding the coefficient systems transcribed from both configurations.
 
-This development does not decide $\JC(2)$. The plane problem is now the remaining positive-dimensional case of the classical conjecture. The present work concerns only its known $(72,108)$ degree frontier. Guccione, Guccione, Horruitiner and Valqui showed that every hypothetical plane counterexample of maximum degree below $125$ must have degree pair $(72,108)$, up to order \cite{GGHV2022}. Their Proposition~4.3 reduces this pair to two explicit Laurent/Newton configurations. Our contribution is the reconstruction and exact replay of algebraic certificates excluding the coefficient systems transcribed from both configurations.
+The central logical distinction is essential. Our verifiers prove polynomial identities for explicit systems. The inference from those systems to all maps of degree pair $(72,108)$ additionally uses GGHV's published reduction and our interface to it. We audit that interface below and release an executable checker, but an external specialist review is still pending. Accordingly, the unconditional theorem in this paper is the exclusion of the two transcribed systems; the degree-$125$ statement is a conditional corollary.
 
-\section{The announced counterexample in dimension three}\label{sec:threeD}
-
-Consider $F=(P,Q,R):\C^3\to\C^3$ with
-\begin{align*}
-P&=(1+xy)^3z+y^2(1+xy)(4+3xy),\\
-Q&=y+3x(1+xy)^2z+3xy^2(4+3xy),\\
-R&=2x-3x^2y-x^3z.
-\end{align*}
-Its component degrees are $(7,6,4)$. Exact symbolic expansion gives
-\[
-\det\!\left(\frac{\partial(P,Q,R)}{\partial(x,y,z)}\right)=-2.
-\]
-Moreover,
-\begin{align*}
-F\left(0,0,-\tfrac14\right)
-&=F\left(1,-\tfrac32,\tfrac{13}{2}\right)
-=F\left(-1,\tfrac32,\tfrac{13}{2}\right)\\
-&=\left(-\tfrac14,0,0\right).
-\end{align*}
-The three source points are distinct. Thus $F$ has nonzero constant Jacobian but is not injective, and hence cannot be a polynomial automorphism. Multiplying one output coordinate by $-1/2$ normalizes the determinant to $1$. Finally,
-\[
-F_n(x_1,x_2,x_3,x_4,\ldots,x_n)
-=\bigl(F(x_1,x_2,x_3),x_4,\ldots,x_n\bigr)
-\]
-extends the example to every $n\geq3$.
-
-\begin{remark}
-The verification above is elementary and exact; it does not depend on numerical evidence. The historical attribution in this note follows the public announcement \cite{Alpoge2026} and the contemporaneous record \cite{Zhang2026}. As of the date of this manuscript, the announcement is extremely recent and should be cited as such.
-\end{remark}
-
-\section{The planar $(72,108)$ frontier}
+\section{The planar \texorpdfstring{$(72,108)$}{(72,108)} frontier}
 
 The main published input is the following consequence of Theorem~2.1 and Proposition~4.3 of \cite{GGHV2022}: below maximum degree $125$, only $(72,108)$ and its symmetric pair remain, and a counterexample of that degree type would yield Laurent polynomials $P,Q\in K[x,x^{-1},y]$ over an algebraically closed characteristic-zero field satisfying
 \[
@@ -122,6 +94,56 @@ N(Q)&=\operatorname{conv}\{(0,0),(2,1),(12,21),(12,24)\}.
 \end{align*}
 
 We emphasize the logical boundary: our computation proves identities for the systems obtained from these two polygonal cases. Promoting those identities to a theorem about all plane maps requires the reduction in \cite{GGHV2022} to be exhaustive and the local transcription and normalization to be exact.
+
+\section{Audit of the published-to-implemented interface}
+
+The primary-source audit uses arXiv:2204.14178v1. Theorem~2.1 appears on PDF page~2, and Proposition~4.3 with its proof appears on PDF pages~10--12. The ring $L^{(1)}$, the bracket $[P,Q]=x^2$, and all ten displayed vertices above agree with those pages. SHA-256 digests of the downloaded PDF and TeX source, together with a line-by-line claim ledger, are recorded in \texttt{TRANSCRIPTION\_AUDIT.md}.
+
+\subsection{Lattice supports}
+
+Under $t=xy^2$ and $z=y^{-1}$, a Laurent monomial transforms as
+\[
+x^iy^j=t^iz^{2i-j}.
+\]
+Fresh boundary-inclusive lattice enumeration gives $61$ and $125$ points for the two Case~1 polygons, and $25$ and $47$ points for Case~2. The corresponding $z$-bands are
+\[
+\begin{array}{c|cc}
+&P&Q\\ \hline
+\text{Case 1}&-8,-7,\ldots,2&-12,-11,\ldots,3\\
+\text{Case 2}&0,1,2&0,1,2,3.
+\end{array}
+\]
+Thus the Case~2 ansatz in the next section includes every lattice-supported coefficient. Case~1 begins with the same upper bands and introduces complete descending slices. A hypothetical full Case~1 solution must satisfy the first five descending bracket layers used in the computation, so inconsistency of that necessary subsystem is sufficient.
+
+Constants are removed from $P$ and $Q$ by translation in the target; the bracket is unchanged. This operation maps every pair with the published polygons into the implemented ansatz, which is the implication required for an exclusion.
+
+\subsection{Reversible vertex normalization}
+
+Let $a_1,a_8,c_8\ne0$ be the coefficients of $P$ at $(1,0),(8,14),(8,16)$. For
+\[
+\widetilde P=\rho P(\lambda x,\mu y),\qquad
+\widetilde Q=\sigma Q(\lambda x,\mu y),
+\]
+choose
+\[
+\mu^2=\frac{a_8}{c_8},\qquad
+\lambda^7=\frac{a_1}{a_8}\mu^{-14},\qquad
+\rho=(a_1\lambda)^{-1},\qquad
+\sigma=(\rho\lambda^3\mu)^{-1}.
+\]
+The algebraically closed ground field supplies the required nonzero roots. The three selected coefficients of $\widetilde P$ equal one. The chain rule gives
+\[
+[\widetilde P,\widetilde Q]=\rho\sigma\lambda^3\mu x^2=x^2.
+\]
+This proves that the assignments $a_1=a_8=c_8=1$ do not discard a component. The released bridge checker verifies these scaling identities symbolically.
+
+\subsection{Division and saturation ledger}
+
+All pivots used by the exact linear solves are nonzero elements of a number field, not parameter polynomials. Compatibility rows are retained. On each Case~1 sign branch, the elimination of $r$ follows from an identity $E_6-\lambda E_2=S\Lambda^2$, with $S\ne0$ and $\Lambda$ monic affine-linear in $r$; hence $\Lambda=0$ at every common zero. Equations removed afterward are checked to be nonzero field-scalar multiples of retained equations.
+
+The only variable localization occurs when $u_3=N/h$ is used in the declared branch $h\ne0$. The complementary specialization $h=0$ is verified against the original seven pre-division equations by separate unit certificates whose payloads contain hashes of those source systems. The regenerated $h\ne0$ equations contain no additional common power of $h$ to divide out. Consequently, the local computation contains no unrecorded saturation.
+
+The executable audit \texttt{scripts/verify\_transcription\_bridge.py} independently checks the polygon bands, normalization, coefficient equations, exhaustive sign split, affine eliminations, proportionality removals, regenerated branch systems, and the $h=0/h\ne0$ coverage. Its scope starts at the statement of Proposition~4.3; it does not re-prove that proposition or its cited predecessors.
 
 \section{Exact Laurent reduction}
 
@@ -162,7 +184,7 @@ Exact elimination in equations~\eqref{eq:J3}--\eqref{eq:J0} leaves four residual
 \]
 The serialized certificate is evaluated again over the number field; the exact remainder is $1$. Hence Case~2 has no solution.
 
-\subsection{Case 1: exhaustive branching and the specialization $h=0$}
+\subsection{Case 1: exhaustive branching and the specialization \texorpdfstring{$h=0$}{h=0}}
 
 The negative $z$-bands produce thirteen compatibility equations. Their first factorization forces the exhaustive split $s=c$ or $s=-c$, where $c\neq0$. In each branch a checked relation
 \[
@@ -202,9 +224,21 @@ so the chosen support is nonsingular modulo $71$ and hence nonsingular over $\Q$
 
 The selected square subsystem is only the construction mechanism. Soundness comes from substituting the recovered multipliers into all $402$ equations over $L$, equivalently all $2010$ rational scalar rows, and checking a zero residual everywhere.
 
+\section{Certificate formats and trust boundaries}
+
+The three smaller certificates are Python pickle payloads with explicit format identifiers, minimal-polynomial coefficients, serialized generators and serialized multipliers. The Case~2 verifier regenerates its selected generators from the coefficient equations and requires exact equality with the embedded copy before evaluating the unit identity. Each $h=0$ payload records the file name and SHA-256 of its pre-division source system; the verifier regenerates the specialization and compares every term.
+
+The hard certificate is a line-oriented text file. Its four-line header records the degree-five minimal polynomial, the identity and the number of multiplier coefficients. Each subsequent record has the form
+\begin{verbatim}
+C|equation|h_exp|u1_exp|u2_exp|field_coefficient
+\end{verbatim}
+where a field coefficient is a reduced element of $\Q[w]/(w^5-w^4+3w^3+3w^2+26)$. The independent parser rejects malformed lines, duplicate supports, unreduced powers and an incorrect header. It then constructs the full rational coefficient map from the separately serialized generators.
+
+Pickle is used only as a data encoding and should be opened solely from the hashed archive in a disposable environment. It is not a security boundary. Mathematical soundness comes from generator regeneration and exact identity evaluation, not from trusting serialized claims.
+
 \section{Independent replay and reproducibility}
 
-The full replay is launched from the exact workspace by
+The full frozen replay is launched from the exact workspace by
 \begin{verbatim}
 ./verify_all.sh
 \end{verbatim}
@@ -219,6 +253,33 @@ JC2_72_108_EXACT_REPLAY_PASS
 \end{verbatim}
 
 The independent \texttt{gmpy2} path parses the large text certificate, normalizes its $1925$ rational coordinates, and evaluates the identity without relying on the FLINT solver that produced it. It performs $13{,}410$ coefficient-field products, corresponding to $335{,}250$ scalar products. The branch symmetry is also evaluated as a polynomial identity rather than inferred from matching dimensions.
+
+For clean-room reproduction, the repository supplies a Docker image based on CPython 3.14.6. The base image is pinned by manifest digest. The packages \texttt{gmpy2} 2.3.1, \texttt{numpy} 2.5.1, \texttt{python-flint} 0.9.0, \texttt{sympy} 1.14.0 and \texttt{mpmath} 1.3.0 are pinned with Linux-wheel hashes. The container downloads the frozen $v1.0.1$ snapshot from Zenodo only, verifies the outer and nested SHA-256 digests, and then runs the exact replay, bridge audit and negative controls. The corresponding GitHub Actions job uses Ubuntu 24.04 on x86-64 and requires the final marker
+\begin{verbatim}
+JC2_72_108_CLEAN_ROOM_PASS
+\end{verbatim}
+before success.
+
+Five negative controls deliberately change, in turn, a source hash, a validly serialized certificate coefficient, an equation coefficient, a branch-symmetry coefficient and one exact rational coordinate of the hard certificate. Every altered object is required to fail its intended verifier. The tests operate on temporary copies and leave the frozen archive untouched.
+
+\begin{table}[ht]
+\centering
+\caption{Claim-to-verifier summary.}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.29\textwidth}>{\raggedright\arraybackslash}X@{}}
+\toprule
+Claim & Exact object & Verifier \\
+\midrule
+Case 2 is empty & $1=\sum T_iR_i$ & generator regeneration and serialized-certificate replay \\
+Case 1 split is exhaustive & $\kappa(s^2-c^2)^2$ & transcription-bridge checker \\
+$r$ elimination is component-preserving & $E_6-\lambda E_2=S\Lambda^2$ & transcription-bridge checker \\
+The $h=0$ branches are empty & two pre-division unit identities & source-hash, generator and identity replay \\
+The hard branch forces $h=0$ & $h=\sum T_iE_i$ & independent \texttt{gmpy2} scalar replay \\
+The second sign branch is covered & exact involution & branch-symmetry verifier \\
+The published degree consequence applies & GGHV Theorem~2.1 and Proposition~4.3 & external mathematical audit still required \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \begin{table}[ht]
 \centering
@@ -259,13 +320,13 @@ This conclusion does not prove $\JC(2)$: configurations of maximum degree at lea
 
 \section{Conclusion}
 
-The newly announced three-dimensional example creates a clear dimensional divide: the classical Jacobian conjecture is false in every dimension $n\geq3$, while dimension two remains unresolved. Against that background, the exact reconstruction reported here removes, conditionally on the published reduction, the sole degree pair left below $125$. The computational content is finite and replayable: serialized unit certificates, a large exact membership identity, fixed hashes, an independent arithmetic verifier, and a single terminal success marker. The next necessary step is independent specialist review of both the theoretical transcription and the certificate replay.
+The exact reconstruction reported here excludes both coefficient systems transcribed from the two alternatives of GGHV Proposition~4.3. The computational content is finite and replayable: regenerated supports and residuals, three unit certificates, a large exact ideal-membership identity, fixed hashes, an independent arithmetic verifier, an executable interface audit and deliberate failure tests. Conditional on the published reduction and a faithful interface, this removes the sole degree pair left below $125$. The next necessary step is independent specialist review of the upstream reduction and of the transcription documented here; the conditional qualifier should remain until that review is obtained.
 
 \section*{Data and code availability}
-The LaTeX source, exact certificates, reconstruction programs, manifests, and replay scripts are distributed with the accompanying research archive. The principal certificate is too large to print but is directly machine-verifiable from \texttt{hard/h\_certificate\_exact.txt}.
+The LaTeX source, exact certificates, reconstruction programs, manifests, replay scripts and audit materials are archived at \href{https://doi.org/10.5281/zenodo.21479814}{doi:10.5281/zenodo.21479814} and developed at \url{https://github.com/bilLkarkariy/jc2-72-108-exact-certificates}. The principal certificate is too large to print but is directly machine-verifiable from \texttt{hard/h\_certificate\_exact.txt} in the frozen replay bundle. The files \texttt{TRANSCRIPTION\_AUDIT.md}, \texttt{CLAIMS\_TO\_FILES.md} and \texttt{REPRODUCE.md} state the trust boundary and the complete clean-room procedure.
 
 \section*{Acknowledgment of computational assistance}
-OpenAI Codex assisted with certificate reconstruction, verification scripting, and preparation of this manuscript. All mathematical claims in the note are tied to exact machine-checkable identities or to explicitly cited published reductions; responsibility for validation and interpretation remains with the author.
+OpenAI Codex and GPT-5.6 Sol were used interactively to assist with symbolic derivations, software development, certificate reconstruction, verification design and manuscript preparation. Every central computational claim is supported by explicit characteristic-zero identities and deterministic replay programs. The human author reviewed the outputs and accepts full responsibility for the manuscript and released artifacts.
 
 \begin{thebibliography}{9}
 \bibitem{Keller1939}
@@ -285,11 +346,6 @@ L. Alp\"oge,
 X post, 20 July 2026,
 \url{https://x.com/__alpoge__/status/2079028340955197566}.
 
-\bibitem{Zhang2026}
-Z. Zhang,
-\emph{Direct Consequences of the Three-Dimensional Counterexample to the Jacobian Conjecture},
-expository note, 20 July 2026,
-\url{https://zzhang-iu.github.io/papers/direct-consequences-jacobian/}.
 \end{thebibliography}
 
 \end{document}
