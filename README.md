@@ -1,5 +1,7 @@
 # Exact certificate replay for the JC2 degree pair (72,108)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21479814.svg)](https://doi.org/10.5281/zenodo.21479814)
+
 This repository accompanies the manuscript **Exact Computer-Assisted Exclusion
 of the (72,108) Frontier in the Two-Dimensional Jacobian Problem**.
 
@@ -81,8 +83,8 @@ seconds on an Apple Silicon laptop. Runtime may vary substantially.
 
 ## Citation
 
-Use the metadata in [`CITATION.cff`](CITATION.cff). A DOI will be added when
-the archival Zenodo record is published.
+Use the metadata in [`CITATION.cff`](CITATION.cff). The archival release is
+available at [doi:10.5281/zenodo.21479814](https://doi.org/10.5281/zenodo.21479814).
 
 ## Licenses
 
