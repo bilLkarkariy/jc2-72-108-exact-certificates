@@ -28,7 +28,7 @@ exhaustive? In particular, I would be grateful for a check of:
 4. the claim that no division, branch split or saturation removes a component.
 
 The new audit document and machine checker are in the draft `v1.1` pull
-request: [DRAFT PR URL].
+request: https://github.com/bilLkarkariy/jc2-72-108-exact-certificates/pull/1
 
 This is not presented as a proof of JC(2). I would welcome a correction even
 if the audit reveals a gap.
